@@ -3,32 +3,126 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Valentine?</title>
+  <title>Question for You</title>
+
   <style>
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; 
-           display:flex; min-height:100vh; align-items:center; justify-content:center; 
-           background: linear-gradient(135deg, #ffe0ec, #fff7d6); margin:0; }
-    .card { background: rgba(255,255,255,0.85); padding: 28px; border-radius: 18px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.12); max-width: 520px; width: 92%; }
-    h1 { margin: 0 0 10px; font-size: 28px; }
-    p { margin: 8px 0 18px; font-size: 16px; line-height: 1.35; }
-    .btns { display:flex; gap:10px; flex-wrap:wrap; }
-    button { border:0; padding: 12px 16px; border-radius: 12px; cursor:pointer;
-             font-weight:700; font-size: 15px; }
-    .yes { background:#ff4d6d; color:white; }
-    .yes2 { background:#ff8fab; color:#3a0010; }
-    .no { background:#f1f3f5; color:#333; position: relative; }
-    .result { margin-top: 16px; padding: 12px; border-radius: 12px; display:none; }
-    .result.show { display:block; background:#e6ffed; }
-    .tiny { font-size: 12px; color:#666; margin-top:14px; }
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #ffe0ec, #fff7d6);
+    }
+
+    .screen {
+      display: none;
+      width: 92%;
+      max-width: 520px;
+      background: rgba(255,255,255,0.88);
+      padding: 28px;
+      border-radius: 18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+      animation: fadeIn 0.5s ease;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: 28px;
+    }
+
+    p {
+      font-size: 16px;
+      line-height: 1.4;
+      margin: 8px 0 18px;
+    }
+
+    .btns {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: 0;
+      padding: 12px 16px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 15px;
+    }
+
+    .primary {
+      background: #ff4d6d;
+      color: white;
+    }
+
+    .yes {
+      background: #ff4d6d;
+      color: white;
+    }
+
+    .yes2 {
+      background: #ff8fab;
+      color: #3a0010;
+    }
+
+    .no {
+      background: #f1f3f5;
+      color: #333;
+      position: relative;
+    }
+
+    .result {
+      margin-top: 16px;
+      padding: 12px;
+      border-radius: 12px;
+      display: none;
+      background: #e6ffed;
+    }
+
+    .result.show {
+      display: block;
+    }
+
+    .tiny {
+      font-size: 12px;
+      color: #666;
+      margin-top: 14px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
   </style>
 </head>
+
 <body>
-  <div class="card">
-    <h1 id="title">Hey you 🫶</h1>
-    <p id="msg">
-      I know we’re long-distance, so I made you a tiny button-powered moment:
-      will you be my Valentine?
+
+  <!-- SCREEN 1 -->
+  <div class="screen active" id="screen1">
+    <h1>Hey you 🫶</h1>
+    <p>
+      I have lots of fun planned for us in a week,
+      but first… I have a question.
+    </p>
+    <div class="btns">
+      <button class="primary" id="continue">Okay, go on 👀</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 2 -->
+  <div class="screen" id="screen2">
+    <h1>So…</h1>
+    <p>
+      I know we’re long-distance, so I made you a tiny button-powered moment.
+      Will you be my Valentine?
     </p>
 
     <div class="btns">
@@ -40,13 +134,22 @@
     <div class="result" id="result">
       <h2 style="margin:0 0 6px;">YAY 🎉</h2>
       <div id="details"></div>
-      <p style="margin:10px 0 0;">Text me: “VALENTINE ✅” so I can screenshot this and brag.</p>
+      <p style="margin:10px 0 0;">
+        Screenshot this and text me “VALENTINE ✅”
+        so I can brag a little.
+      </p>
     </div>
 
     <div class="tiny">Made with 💻 + questionable button design.</div>
   </div>
 
   <script>
+    // screen switching
+    document.getElementById("continue").onclick = () => {
+      document.getElementById("screen1").classList.remove("active");
+      document.getElementById("screen2").classList.add("active");
+    };
+
     const result = document.getElementById("result");
     const details = document.getElementById("details");
     const noBtn = document.getElementById("no");
@@ -54,7 +157,7 @@
     function celebrate(extra) {
       result.classList.add("show");
       details.textContent = extra || "Officially adorable. Officially my Valentine.";
-      // quick confetti-ish effect using emojis
+
       let i = 0;
       const rain = setInterval(() => {
         const s = document.createElement("div");
@@ -77,19 +180,20 @@
     document.getElementById("yes").onclick = () => celebrate();
     document.getElementById("yes2").onclick = () => celebrate("Enthusiasm noted and appreciated 😌💅");
 
-    // “No” button dodges the cursor (playful, not mean)
+    // playful dodge
     noBtn.addEventListener("mouseenter", () => {
-      const card = document.querySelector(".card").getBoundingClientRect();
+      const card = document.getElementById("screen2").getBoundingClientRect();
       const btn = noBtn.getBoundingClientRect();
       const maxX = card.width - btn.width - 20;
-      const maxY = 160; // keep it near the button area
+      const maxY = 160;
       const x = 10 + Math.random() * maxX;
-      const y = 110 + Math.random() * maxY;
+      const y = 140 + Math.random() * maxY;
       noBtn.style.position = "absolute";
       noBtn.style.left = x + "px";
       noBtn.style.top = y + "px";
     });
   </script>
+
 </body>
 </html>
 
